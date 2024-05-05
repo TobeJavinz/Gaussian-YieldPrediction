@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weight Prediction</title>
+</head>
+<body>
+    <h1>Weight Prediction</h1>
+    <div>
+        <label for="bags">Number of Bags:</label>
+        <input type="number" id="bags" step="any">
+    </div>
+    <div>
+        <label for="temp">Temperature (°C):</label>
+        <input type="number" id="temp" step="any">
+    </div>
+    <div>
+        <label for="hum">Humidity (%):</label>
+        <input type="number" id="hum" step="any">
+    </div>
+    <button onclick="predictWeight()">Predict Weight</button>
+    <div id="result"></div>
+
+    <script>
+        function predictWeight() {
+            // Get input values
+            const bags = parseFloat(document.getElementById("bags").value);
+            const temp = parseFloat(document.getElementById("temp").value);
+            const hum = parseFloat(document.getElementById("hum").value);
+
+            // Prepare data object
+            const inputData = {
+                bags,
+                temp,
+                hum,
+            };
+
+            // Make a POST request to the FastAPI endpoint
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(inputData),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                // Display the predicted weight
+                document.getElementById('result').innerHTML = `Predicted Weight: ${data.predicted_weight} g`;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
